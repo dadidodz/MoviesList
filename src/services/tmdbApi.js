@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { TMDB_API_KEY, TMDB_ACCESS_TOKEN } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BASE_API_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -91,10 +92,14 @@ export const fetchMovieById = async (movieId) => {
 };
 
 export const fetchFavoriteMovies = async () => {
-
+    const sessionId = await AsyncStorage.getItem('session_id');
+    if (!sessionId) {
+        console.error('Aucune session trouvée');
+        return;
+    }
     const options = {
         method: 'GET',
-        url: `https://api.themoviedb.org/3/account/21861301/favorite/movies`,
+        url: `https://api.themoviedb.org/3/account/${sessionId}/favorite/movies`,
         params: {language: 'fr-FR', page: '1', sort_by: 'created_at.asc'},
         headers: {
             accept: 'application/json',
@@ -113,9 +118,14 @@ export const fetchFavoriteMovies = async () => {
 };
 
 export const toggleFavoriteMovie = async (movieId, isFavorite) => {
+    const sessionId = await AsyncStorage.getItem('session_id');
+    if (!sessionId) {
+        console.error('Aucune session trouvée');
+        return;
+    }
     const options = {
         method: 'POST',
-        url: `https://api.themoviedb.org/3/account/21861301/favorite`,
+        url: `https://api.themoviedb.org/3/account/${sessionId}/favorite`,
         headers : {
             accept: 'application/json',
             Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
@@ -138,9 +148,14 @@ export const toggleFavoriteMovie = async (movieId, isFavorite) => {
 
 export const fetchWatchlistMovies = async () => {
 
+    const sessionId = await AsyncStorage.getItem('session_id');
+    if (!sessionId) {
+        console.error('Aucune session trouvée');
+        return;
+    }
     const options = {
         method: 'GET',
-        url: 'https://api.themoviedb.org/3/account/21861301/watchlist/movies',
+        url: `https://api.themoviedb.org/3/account/${sessionId}/watchlist/movies`,
         params: {language: 'fr-FR', page: '1', sort_by: 'created_at.asc'},
         headers: {
             accept: 'application/json',
@@ -159,9 +174,14 @@ export const fetchWatchlistMovies = async () => {
 };
 
 export const toggleWatchlistMovie = async (movieId, isInWatchlist) => {
+    const sessionId = await AsyncStorage.getItem('session_id');
+    if (!sessionId) {
+        console.error('Aucune session trouvée');
+        return;
+    }
     const options = {
         method: 'POST',
-        url: 'https://api.themoviedb.org/3/account/21861301/watchlist',
+        url: `https://api.themoviedb.org/3/account/${sessionId}/watchlist`,
         headers: {
           accept: 'application/json',
           'content-type': 'application/json',
